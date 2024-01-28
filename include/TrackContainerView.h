@@ -155,6 +155,7 @@ public slots:
 	void realignTracks();
 	lmms::gui::TrackView * createTrackView( lmms::Track * _t );
 	void deleteTrackView( lmms::gui::TrackView * _tv );
+	void deleteOtherTracksView( lmms::gui::TrackView * _tv );
 
 	void dropEvent( QDropEvent * _de ) override;
 	void dragEnterEvent( QDragEnterEvent * _dee ) override;

@@ -47,11 +47,13 @@ protected:
 	void mousePressEvent( QMouseEvent * me ) override;
 	void paintEvent( QPaintEvent * pe ) override;
 	bool confirmRemoval();
+	bool confirmAllRemoval();
 
 
 private slots:
 	void cloneTrack();
 	void removeTrack();
+	void removeOtherTracks();
 	void updateMenu();
 	void selectTrackColor();
 	void randomizeTrackColor();
@@ -74,6 +76,7 @@ private:
 
 signals:
 	void trackRemovalScheduled( lmms::gui::TrackView * t );
+	void otherTracksRemovalScheduled( lmms::gui::TrackView * t );
 
 } ;
 

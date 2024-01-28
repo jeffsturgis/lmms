@@ -110,6 +110,11 @@ TrackOperationsWidget::TrackOperationsWidget( TrackView * parent ) :
 				SLOT(deleteTrackView(lmms::gui::TrackView*)),
 							Qt::QueuedConnection );
 
+	connect( this, SIGNAL(otherTracksRemovalScheduled(lmms::gui::TrackView*)),
+			m_trackView->trackContainerView(),
+				SLOT(deleteOtherTracksView(lmms::gui::TrackView*)),
+							Qt::QueuedConnection );								
+
 	connect( m_trackView->getTrack()->getMutedModel(), SIGNAL(dataChanged()),
 			this, SLOT(update()));
 
@@ -218,6 +223,40 @@ bool TrackOperationsWidget::confirmRemoval()
 	return false;
 }
 
+/*! \brief Show a message box warning the user that this track is about to be closed */
+bool TrackOperationsWidget::confirmAllRemoval()
+{
+	bool needConfirm = ConfigManager::inst()->value("ui", "trackdeletionwarning", "1").toInt();
+	if (!needConfirm){ return true; }
+	
+	QString messageRemoveTrack = tr("After removing all other tracks, they cannot "
+					"be recovered. Are you sure you want to remove all tracks except for \"%1\"?")
+					.arg(m_trackView->getTrack()->name());
+	QString messageTitleRemoveTrack = tr("Confirm removal");
+	QString askAgainText = tr("Don't ask again");
+	auto askAgainCheckBox = new QCheckBox(askAgainText, nullptr);
+	connect(askAgainCheckBox, &QCheckBox::stateChanged, [](int state){
+		// Invert button state, if it's checked we *shouldn't* ask again
+		ConfigManager::inst()->setValue("ui", "trackdeletionwarning", state ? "0" : "1");
+	});
+
+	QMessageBox mb(this);
+	mb.setText(messageRemoveTrack);
+	mb.setWindowTitle(messageTitleRemoveTrack);
+	mb.setIcon(QMessageBox::Warning);
+	mb.addButton(QMessageBox::Cancel);
+	mb.addButton(QMessageBox::Ok);
+	mb.setCheckBox(askAgainCheckBox);
+	mb.setDefaultButton(QMessageBox::Cancel);
+
+	int answer = mb.exec();
+
+	if( answer == QMessageBox::Ok )
+	{
+		return true;
+	}
+	return false;
+}
 
 
 /*! \brief Clone this track
@@ -262,6 +301,18 @@ void TrackOperationsWidget::removeTrack()
 		emit trackRemovalScheduled(m_trackView);
 	}
 }
+
+/*! \brief Remove all other tracks from the track list
+ *
+ */
+void TrackOperationsWidget::removeOtherTracks()
+{
+	if (confirmAllRemoval())
+	{
+		emit otherTracksRemovalScheduled(m_trackView);
+	}
+}
+
 
 void TrackOperationsWidget::selectTrackColor()
 {
@@ -323,7 +374,10 @@ void TrackOperationsWidget::updateMenu()
 	toMenu->addAction( embed::getIconPixmap( "cancel", 16, 16 ),
 						tr( "Remove this track" ),
 						this, SLOT(removeTrack()));
-
+	toMenu->addAction( embed::getIconPixmap( "cancel", 16, 16 ),
+						tr( "Remove all other tracks" ),
+						this, SLOT(removeOtherTracks()));
+						
 	if( ! m_trackView->trackContainerView()->fixedClips() )
 	{
 		toMenu->addAction( tr( "Clear this track" ), this, SLOT(clearTrack()));

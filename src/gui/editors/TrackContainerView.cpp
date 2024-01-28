@@ -299,6 +299,27 @@ void TrackContainerView::deleteTrackView( TrackView * _tv )
 	Engine::audioEngine()->doneChangeInModel();
 }
 
+void TrackContainerView::deleteOtherTracksView( TrackView * _tv )
+{	
+	//move preserved track to beginning
+	moveTrackView( _tv, 0 );	
+	//delete until only one remains
+	while( !m_trackViews.empty() )
+	{
+		if(m_trackViews.size() == 1){
+			break;
+		}
+		
+		TrackView * tv = m_trackViews.takeLast();
+		Track * t = tv->getTrack();
+		removeTrackView( tv );
+		delete tv;
+		Engine::audioEngine()->requestChangeInModel();
+		delete t;
+		Engine::audioEngine()->doneChangeInModel();
+	}
+}
+
 
 
 
