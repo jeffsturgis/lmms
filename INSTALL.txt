@@ -15,8 +15,8 @@ Live online chat via Discord (similar to IRC):
 
    https://lmms.io/chat, Channel #programming
 
-Dependencies:
-sudo apt install cmake g++ qtscript5-dev libqt5x11extras5-dev libsndfile1-dev libxml2-dev libpulse-dev lame libasound2-dev pulseaudio libsoundio-dev libmp3lame-dev octave libasound2-dev libatlas-base-dev libsamplerate0-dev libxcb-util-dev libsndio-dev x11proto-core-dev libxcb-keysyms1-dev libx11-xcb-dev libjack-dev 
+
+sudo apt install cmake g++ qtscript5-dev libqt5x11extras5-dev libsndfile1-dev libxml2-dev libpulse-dev lame libasound2-dev pulseaudio libsoundio-dev libmp3lame-dev octave libasound2-dev libatlas-base-dev libsamplerate0-dev libxcb-util-dev libsndio-dev x11proto-core-dev libxcb-keysyms1-dev libx11-xcb-dev libjack-dev qtbase5-private-dev portaudio19-dev libsdl2-dev libgig-dev libfluidsynth-dev libfltk1.3-dev lv2-dev libwine-dev libsuil-dev libstk0-dev zynaddsubfx-lv2 lv2-c++-tools ardour-lv2-plugins
 
 Basic build steps:
 
